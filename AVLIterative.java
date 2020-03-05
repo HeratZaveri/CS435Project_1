@@ -22,7 +22,7 @@ public class AVLIterative {
         //start at root 
         if(root == null) {
       	  return myNode;
-        }
+       }
         
         Node myParent = null;
         Node current = root;
@@ -48,7 +48,8 @@ public class AVLIterative {
 
         changeTreeHeight(myNode);
         
-        //System.out.println(root.height);
+        //Node v = myNode.parent;
+        //System.out.println(v.data);
         
         Node z = myNode;
         Node x = null;
@@ -64,51 +65,26 @@ public class AVLIterative {
               }
         }
         if(z != null) {
-        	System.out.println("Balance");
-        	System.out.println(z.data);
-        	System.out.println(y.data);
-        	System.out.println(x.data);
-            Node blncdNode = balance(z,y,x);           
-            Node parent = z.parent;
-            if(parent.left.data == z.data){
-              parent.left = blncdNode;
-            }else{
-              parent.right = blncdNode;
+        	//System.out.println(z.data);
+        	//System.out.println(x.data);
+        	//System.out.println(y.data);
+            Node blncdNode = balance(z,y,x); 
+            //System.out.println(blncdNode.data);
+            if(z == root) {
+            	root = blncdNode;
+            	blncdNode.parent = null;
+            }
+            else {
+            	Node parent = z.parent;
+            	Node parentLeft = parent.left;
+            	if(parentLeft == z){
+            		parent.left = blncdNode;
+            	}else{
+            		parent.right = blncdNode;
+            	}
             }
         }
-       /*
-        while(x != null){
-          //int someNumber = getBalanceFactor(height(z.left),height(z.right));
-          //System.out.println(someNumber); 
-          inOrderHelp(x);
-          if(getBalanceFactor(height(x.left),height(x.right)) <= 1){
-            z = y;
-            y = x;
-            x = x.parent;
-           System.out.println.data);
-           //System.out.println(y.data);
-           //System.out.println(x.data);     
-          }else{
-            break;
-          }
-        }
-      System.out.println();
-      System.out.println(z.data);
-      System.out.println(y.data);
-      System.out.println(x.data);
-      //System.out.print(z.data);
-       if(x.parent != null) {
-    	System.out.print("Balance");
-        Node blncdNode = balance(x,y,z);
-        Node parent = x.parent;
-        if(parent.left.data == x.data){
-          parent.left = blncdNode;
-        }else{
-          parent.right = blncdNode;
-        }
-       }
-       */
-        return myNode;
+        return root;
      }
 
 
@@ -266,11 +242,11 @@ public class AVLIterative {
       }
       return rootNode;
      }
-     public static void inOrderHelp(Node node){
+     public static void postOrderHelp(Node node){
   	   if(node != null) {
-  		   inOrderHelp(node.left);
+  		   postOrderHelp(node.left);
+  		   postOrderHelp(node.right);
   		   System.out.print(node.data + " ");
-  		   inOrderHelp(node.right);
   	   }
      }
      public static int getBalanceFactor(int heightOfLft, int heightOfRght){
@@ -294,7 +270,13 @@ public class AVLIterative {
       
       y.left = root;
       root.right = Leaf3;
-
+      
+      y.parent = root.parent;
+      //root.parent = y;
+      //System.out.println(y.data);
+      //Node r = root.parent;
+      //System.out.println(r.data);
+      
       root.height = 1 + max(height(root.left), height(root.right));
       y.height = 1 + max(height(y.left), height(y.right));
 
@@ -354,36 +336,44 @@ public class AVLIterative {
      public static void main(String[] args) {
          Scanner scan = new Scanner(System.in);
          Node root = null;
-         root = insertIter(root,7);
-         //System.out.println(root.data);
-         insertIter(root,8);
-         insertIter(root,3);
+         root = insertIter(root,44);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,57);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,47);
+         postOrderHelp(root);        
+         System.out.println();
          //inOrderHelp(root);
          //System.out.println(root.right.data);
-         insertIter(root,4);
-         insertIter(root,5);
-         insertIter(root,10);     
-         insertIter(root,9);
-         insertIter(root,2);
-         insertIter(root,15);
-         insertIter(root,17);
-         insertIter(root,16);
-        
-         //inOrderHelp(root);
-         System.out.println(findMaxIter(root).data);
-         System.out.println(findMinIter(root).data);
+         root = insertIter(root,78);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,50);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,88);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,48);
+         postOrderHelp(root);
+         System.out.println();
+         //postOrderHelp(root);
+         root = insertIter(root,62);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,66);
+         postOrderHelp(root);
+         System.out.println();
+         root = insertIter(root,17);
+         //root = insertIter(root,16);
+         postOrderHelp(root);
+         System.out.println(); 
+         //There needs to be fix here
+         root = insertIter(root,16);
+         postOrderHelp(root);
+         System.out.println(); 
          
-         //System.out.println(findNextIter(root,5).data);
-         //System.out.println(findPrevIter(root,20).data + " ");
-         /*
-         deleteIter(root,8); 
-         inOrderHelp(root);
-         System.out.println();
-         deleteIter(root,3);
-         inOrderHelp(root);
-         System.out.println();
-         deleteIter(root,10);
-         inOrderHelp(root);
-         */
      }
 }
