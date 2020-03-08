@@ -1,8 +1,5 @@
 package Prjct1;
-
 import java.util.*;
-
-import Project1.Node;
 
 class Node{
 	int data, height;
@@ -129,7 +126,7 @@ public class AVLTrees {
         return root;
      }
 
-     public static void deleteIter(Node root, int delete){
+     public static Node deleteIter(Node root, int delete){
         Stack<Node> myStack = new Stack<Node>();
         Node parent = null;
         Node current = root;
@@ -148,7 +145,7 @@ public class AVLTrees {
         //3 cases
         //If node we have to delete has no children than just delete it
         if(hasChildren(current).equals("None")){
-           myStack.pop();
+           //myStack.pop();
            //actionPos = myStack.peek();
            current = null;           
         }
@@ -156,7 +153,7 @@ public class AVLTrees {
         //Check weather they have left or right child
         if(hasChildren(current).equals("Left")){
           //Pop the current node and its parent
-          myStack.pop();
+          //myStack.pop();
         	if(parent.left == current) {
         		parent.left = current.left;
         	}
@@ -165,7 +162,7 @@ public class AVLTrees {
         //check the left and right of pointer and just attach
         //next node to parent
         if(hasChildren(current).equals("Right")){
-          myStack.pop();
+          //myStack.pop();
           //actionPos = myStack.peek();
         	if(parent.left == current) {
         		parent.left = current.right;
@@ -175,12 +172,34 @@ public class AVLTrees {
         }		
         //if node has two children
         if(hasChildren(current).equals("Two")){
-          myStack.pop();
+          //myStack.pop();
           //actionPos = myStack.peek();
-          //we need to get the in order predecessor
+          //we need to get the in order successor
           Node toReplace = findNextIter(root, current.data);
+          //find the parent of toReplace
+          Node parentOfreplc = null;
+          Node start = root;
+          while(start.data != toReplace.data){
+            parentOfreplc = start;
+            if(start.data < toReplace.data){
+              start = start.right;
+            }else {
+              start = start.left;
+            }
+          }
           current.data = toReplace.data;
-          //replace with null
+          //check position of to replace
+          //then check if it has a right child
+            if(toReplace.right != null){
+              //replace toReplace with its child and attach it with its parent
+              if(parentOfreplc.right == toReplace){
+                parentOfreplc.right = toReplace.right;
+              }else{
+                parentOfreplc.left = toReplace.right;
+              }
+            }
+          
+          //otherwise delete pointer
           toReplace = null;
           //actionPos.height = 1 + getBalanceFactor(height(actionPos.left), height(actionPos.right));
         }
@@ -188,9 +207,21 @@ public class AVLTrees {
           //parent of deleted node
           Node actionPos = myStack.pop();
           if(!(balanced(actionPos))){
-
-          }
-        }
+              //check placement of node see if it is at root
+              // than just attach it to the root
+               if(actionPos == root){
+               root = balanceDeletedTree(root);
+               return root;
+               }
+               //check placement and attach it with root
+               if(myStack.peek().left == actionPos){
+                myStack.peek().left = balanceDeletedTree(actionPos);
+               }else{
+                myStack.peek().right = balanceDeletedTree(actionPos);
+               }
+           }
+         }
+       return root;
      }
      //check how many children a node has
      public static String hasChildren(Node node){
@@ -235,7 +266,7 @@ public class AVLTrees {
              rootNode = rootNode.right;
            }
            else if(current.data < rootNode.data){
-        	   move = rootNode;
+        	     move = rootNode;
                rootNode = rootNode.left;
            }
          }
@@ -327,9 +358,9 @@ public class AVLTrees {
      //left rotation from given node
      public static Node leftRotate(Node node){
       
-    	   Node y = node.right;
-         node.right = y.left;
-         y.left = node;
+    	  Node y = node.right;
+        node.right = y.left;
+        y.left = node;
       
       //System.out.println(y.data);
       //Node r = root.parent;
@@ -397,6 +428,36 @@ public class AVLTrees {
          }
          //right - right case
          return leftRotate(someNode);
+     }
+     //Different case when we delete from tree
+     public static balanceDeletedTree(Node somNode){
+      int balanceFactor = getBalanceFactor(height(someNode.left), height(someNode.right));
+         
+      //R-0 and R1 and R-1 rotate
+      //if node is 2 it is left imbalance 
+      if(balanceFactor > 1){
+        //left - right case
+        Node lft = someNode.left;
+        int bfLft = getBalanceFactor(height(lft.left),height(lft.right));
+        //if R and -1 rotate left
+        if(bfLft < 0){
+            someNode.left = leftRotate(someNode.left);
+        }
+        //left - left case
+        return rightRotate(someNode);
+      }
+      // 
+      else if(balanceFactor < -1){
+       //right - left case
+       Node rght = someNode.right;
+       int bfRght = getBalanceFactor(height(rght.left),height(rght.right));
+       //if L0  rotate and L1
+       if(bfRght >= 0){
+           someNode.right = rightRotate(someNode.right);
+       }
+      }
+      //left -1 case or right - right
+      return leftRotate(someNode);
      }
      //balanced node 
      public static boolean balanced(Node node){
