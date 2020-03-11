@@ -294,16 +294,13 @@ public class AVLTrees {
           return move;
         }
         //if the left subtree doesn't exist go to the ancestor node starting at the root
-        while(rootNode != null){
+        while(rootNode.data != current.data){
           if(current.data > rootNode.data){
             move = rootNode;
             rootNode = rootNode.right;
           }
           else if(current.data < rootNode.data){
-              rootNode = rootNode.left;
-          }
-          else{
-            break;
+            rootNode = rootNode.left;
           }
         }
         return move;
