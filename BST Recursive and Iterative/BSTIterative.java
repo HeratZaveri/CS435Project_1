@@ -167,6 +167,7 @@ public class BSTIterative {
 
      public static Node findPrevIter(Node rootNode, int value){
         Node current = rootNode;
+	//go till we find previous node
         while(current.data != value){
           if(current.data > value){
             current = current.left;
