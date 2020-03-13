@@ -27,6 +27,7 @@ public class BSTIterative {
          //go left and right till we hit a null pointer 
          while(current != null){
            temp = current;
+           //Find out where the node will be placed on right or left subtree
            if(current.data <= data){
                current = current.right;
            }
@@ -35,7 +36,7 @@ public class BSTIterative {
            }
          }
          //steps to attach a node based on 
-         // if it > than root or < root
+         // if it > than current or < current
          if(temp.data <= data){
              temp.right = myNode;
          }else{
